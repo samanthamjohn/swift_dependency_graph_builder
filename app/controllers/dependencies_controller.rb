@@ -1,7 +1,5 @@
 class DependenciesController < ApplicationController
   def index
-    # @dependents = Dependency.paginate(page: params[:page])
-
     @file_depends = FileDependency
       .depends
       .joins(:dependency)
@@ -14,7 +12,7 @@ class DependenciesController < ApplicationController
       .where("value LIKE '%9hopscotch%'")
       .group('dependency_id')
       .order('count DESC')
-      .limit(50)
+      .limit(200)
       # .where("type = ?", SwiftFile::NOMINAL)
 
   end

@@ -5,7 +5,7 @@ h2 #{@dependents.count} dependents, #{@providers.count} providers
 h2 Swift files that provide this:
 ul
   - @providers.each do |provider|
-    li= provider.swift_filename
+    li= link_to provider.swift_filename, swift_file_path(provider)
 
 h2 Swift files that depend on this:
 ul

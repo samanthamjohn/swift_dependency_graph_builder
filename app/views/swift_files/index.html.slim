@@ -1,0 +1,8 @@
+h1 Providers
+
+ul
+  - @file_provides.each do |provider|
+    li
+      p= link_to provider.filename, swift_file_path(provider.swift_file_id) 
+      p= provider.count
+

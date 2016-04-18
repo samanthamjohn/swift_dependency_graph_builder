@@ -1,0 +1,11 @@
+h1= @swift_file.swift_filename
+
+h2 provides: #{@provides.count}
+
+
+h2 Dependencies this provides
+ul
+  - @provides.each do |provide|
+    li
+      p= provide.value
+      p= provide.dependency_type
