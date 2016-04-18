@@ -1,0 +1,7 @@
+h1 Dependencies
+
+ul
+  - @dependents.each do |dependent|
+    li= dependent.value
+
+= will_paginate @dependents

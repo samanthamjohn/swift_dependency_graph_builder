@@ -1,0 +1,27 @@
+### Swift dependencies file v0 ###
+provides-top-level:
+- "ActionView"
+provides-nominal:
+- "C9Hopscotch10ActionView"
+provides-member:
+- ["C9Hopscotch10ActionView", ""]
+provides-dynamic-lookup:
+- "executeCompletion"
+- "layoutSubviews"
+depends-top-level:
+- !private "CGSize"
+- !private "*"
+- "BooleanLiteralType"
+depends-member:
+- !private ["Ps16AbsoluteValuable", "IntegerLiteralType"]
+- ["Ps9Equatable", "messageContainerView"]
+- ["PSo8NSCoding", "messageView"]
+depends-nominal:
+- !private "Ps16AbsoluteValuable"
+- "C9Hopscotch10ActionView"
+depends-dynamic-lookup:
+depends-external:
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/Swift.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/AssetsLibrary.swiftmodule"
+interface-hash: "34a3ee0094573fc71adba02a55fd7048"
+
