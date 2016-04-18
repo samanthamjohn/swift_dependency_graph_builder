@@ -1,0 +1,13 @@
+h1 #{@dependency.value} is a #{@dependency.dependency_type} dependency
+
+h2 #{@dependents.count} dependents, #{@providers.count} providers
+
+h2 Swift files that provide this:
+ul
+  - @providers.each do |provider|
+    li= provider.swift_filename
+
+h2 Swift files that depend on this:
+ul
+  - @dependents.each do |provider|
+    li= provider.swift_filename

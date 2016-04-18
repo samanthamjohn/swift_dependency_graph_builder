@@ -92,7 +92,7 @@ class SwiftFile < ActiveRecord::Base
     node.children.map do |child|
       if child.is_a? Psych::Nodes::Sequence
         child.children.map(&:value).join("-")
-      elsif child.is_a? Psych::Nodes::Value
+      elsif child.is_a? Psych::Nodes::Scalar
         child.value
       end
     end

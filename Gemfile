@@ -43,3 +43,7 @@ gem 'rspec-rails', group: [:development, :test]
 gem 'dotenv-rails', :groups => [:development, :test]
 gem 'will_paginate'
 gem 'slim-rails'
+group :development do
+  gem 'better_errors'
+  gem "binding_of_caller"
+end

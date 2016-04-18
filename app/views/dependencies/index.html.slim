@@ -1,7 +1,9 @@
 h1 Dependencies
 
 ul
-  - @dependents.each do |dependent|
-    li= dependent.value
+  - @file_depends.each do |dependent|
+    li
+      p= link_to dependent.value, dependency_path(dependent.dependency_id) 
+      p= dependent.count
+      p= dependent.type
 
-= will_paginate @dependents
