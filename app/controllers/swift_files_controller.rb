@@ -15,5 +15,13 @@ class SwiftFilesController < ApplicationController
   def show
     @swift_file = SwiftFile.find(params[:id])
     @provides = @swift_file.provides
+      .where("dependency_type <> ?", SwiftFile::EXTERNAL)
+      .where("dependency_type <> ?", SwiftFile::MEMBER)
+      .where("value LIKE '%9hopscotch%'")
+
+    @depends = @swift_file.depends
+      .where("dependency_type <> ?", SwiftFile::EXTERNAL)
+      .where("dependency_type <> ?", SwiftFile::MEMBER)
+      .where("value LIKE '%9hopscotch%'")
   end
 end

@@ -3,7 +3,5 @@ h1 Dependencies
 ul
   - @file_depends.each do |dependent|
     li
-      p= link_to dependent.value, dependency_path(dependent.dependency_id) 
-      p= dependent.count
-      p= dependent.type
+      p= link_to "#{dependent.value} has #{dependent.count} dependents as #{dependent.type}", dependency_path(dependent.dependency_id) 
 

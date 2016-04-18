@@ -23,12 +23,12 @@ class SwiftFile < ActiveRecord::Base
   def setup_dependencies
     mapping = YAML.parse(File.open(filepath)).children.first
 
-    [TOP_LEVEL, NOMINAL, DYNAMIC_LOOKUP, MEMBER].each do |type|
+    [TOP_LEVEL, NOMINAL].each do |type|
       parse_mapping(mapping, type, PROVIDER)
       parse_mapping(mapping, type, DEPENDENT)
     end
 
-    parse_mapping(mapping, EXTERNAL, DEPENDENT)
+    # parse_mapping(mapping, EXTERNAL, DEPENDENT)
   end
 
   def provides_for_type(type)
