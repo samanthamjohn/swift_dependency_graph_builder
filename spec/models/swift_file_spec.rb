@@ -59,7 +59,17 @@ describe SwiftFile, type: :model do
 
     it 'sets the provides-top-level == ActionView' do
       top_level_provides = @swift_file.provides_for_type(SwiftFile::TOP_LEVEL)
-      expect(top_level_provides.map(&:value)).to eq(["ActionView"])
+      expect(top_level_provides.map(&:value)).to include("ActionView")
+    end
+
+    it 'adds non-private depends to the provides-top-level' do
+      top_level_provides = @swift_file.provides_for_type(SwiftFile::TOP_LEVEL)
+      expect(top_level_provides.map(&:value)).to include("BooleanLiteralType")
+    end
+
+    it 'does not add private depends to the provides-top-level' do
+      top_level_provides = @swift_file.provides_for_type(SwiftFile::TOP_LEVEL)
+      expect(top_level_provides.map(&:value)).not_to include("CGSize")
     end
 
     it 'sets the depends-top-level' do
@@ -67,7 +77,17 @@ describe SwiftFile, type: :model do
       expect(top_level_provides.map(&:value)).to eq(["CGSize", "*", "BooleanLiteralType"])
     end
 
-    it 'sets provides-nominal == [C9Hopscotch10ActionView]' do
+    it 'provides-nominal includes entries in the provides-nominal sequence' do
+      nominal_provides = @swift_file.provides_for_type(SwiftFile::NOMINAL)
+      expect(nominal_provides.map(&:value)).to include("C9Hopscotch10ActionView")
+    end
+
+    it 'provides-nominal includes entries in the depends-nominal sequence that are not private' do
+      nominal_provides = @swift_file.provides_for_type(SwiftFile::NOMINAL)
+      expect(nominal_provides.map(&:value)).to include("C9Hopscotch10ActionView")
+    end
+
+    it 'does not duplicate dependencies' do
       nominal_provides = @swift_file.provides_for_type(SwiftFile::NOMINAL)
       expect(nominal_provides.map(&:value)).to eq(["C9Hopscotch10ActionView"])
     end
@@ -83,9 +103,9 @@ describe SwiftFile, type: :model do
       expect(nominal_provides[0]).to eq(nominal_depends[1])
     end
 
-    it 'sets provides dynamic-lookup == ["execution_completion", "layout_subviews"]' do
+    it 'sets provides dynamic-lookup == []' do
       provides = @swift_file.provides_for_type(SwiftFile::DYNAMIC_LOOKUP)
-      expect(provides.map(&:value)).to eq(["executeCompletion", "layoutSubviews"])
+      expect(provides.map(&:value)).to eq([])
     end
 
     it 'sets depends-dynamic-lookup' do
@@ -93,9 +113,15 @@ describe SwiftFile, type: :model do
       expect(provides.map(&:value)).to eq([])
     end
 
-    it 'sets provides member == [["C9Hopscotch10ActionView", ""]]' do
+    it 'adds provides member from the sequence' do
       provides = @swift_file.provides_for_type(SwiftFile::MEMBER)
-      expect(provides.map(&:value)).to eq(["C9Hopscotch10ActionView-"])
+      expect(provides.map(&:value)).to include("C9Hopscotch10ActionView-")
+    end
+
+    it 'adds provides-member from non-private dependencies' do
+      provides = @swift_file.provides_for_type(SwiftFile::MEMBER)
+      expect(provides.map(&:value)).to include("Ps9Equatable-messageContainerView")
+      expect(provides.map(&:value)).to include("Ps9Equatable-messageContainerView")
     end
 
     it 'sets depends-member' do
@@ -103,9 +129,9 @@ describe SwiftFile, type: :model do
       expect(provides.map(&:value)).to eq(["Ps16AbsoluteValuable-IntegerLiteralType", "Ps9Equatable-messageContainerView", "PSo8NSCoding-messageView"])
     end
 
-    it "sets depends-external" do
+    it "does not set depends-external" do
       provides = @swift_file.depends_for_type(SwiftFile::EXTERNAL)
-      expect(provides.map(&:value)).to eq(["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/Swift.swiftmodule", "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/AssetsLibrary.swiftmodule"])
+      expect(provides.map(&:value)).to eq([])
     end
   end
 

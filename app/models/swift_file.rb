@@ -23,12 +23,11 @@ class SwiftFile < ActiveRecord::Base
   def setup_dependencies
     mapping = YAML.parse(File.open(filepath)).children.first
 
-    [TOP_LEVEL, NOMINAL].each do |type|
+    [TOP_LEVEL, NOMINAL, MEMBER].each do |type|
       parse_mapping(mapping, type, PROVIDER)
       parse_mapping(mapping, type, DEPENDENT)
     end
 
-    # parse_mapping(mapping, EXTERNAL, DEPENDENT)
   end
 
   def provides_for_type(type)
@@ -50,10 +49,32 @@ class SwiftFile < ActiveRecord::Base
     values = get_values(mapping, type, provide_or_depend)
     create_dependencies(values, type, provide_or_depend)
 
+    if provide_or_depend == DEPENDENT
+      values = get_non_private_depends(mapping, type)
+      create_dependencies(values, type, PROVIDER)
+    end
+
+  end
+
+  def get_non_private_depends(mapping, type)
+    type = type_string(type, DEPENDENT)
+
+    mapping.children.each_with_index do |child, index|
+      if child.is_a?(Psych::Nodes::Scalar)
+        if child.value == type
+          node = mapping.children[index + 1]
+          return get_non_private_children(node)
+        end
+      end
+    end
+  end
+
+  def type_string(type, provide_or_depend)
+    "#{prefix(provide_or_depend)}-#{type}"
   end
 
   def get_values(mapping, type, provide_or_depend)
-    type = "#{prefix(provide_or_depend)}-#{type}"
+    type = type_string(type, provide_or_depend)
     mapping.children.each_with_index do |child, index|
       if child.is_a?(Psych::Nodes::Scalar)
         if child.value == type
@@ -84,6 +105,20 @@ class SwiftFile < ActiveRecord::Base
       FileDependency.find_or_create_by(dependency: dependency,
                             swift_file: self,
                             dependent_or_provider: provider_or_dependent)
+  end
+
+  def get_non_private_children(node)
+    return unless node.is_a? Psych::Nodes::Sequence
+
+    node.children.map do |child|
+      next unless child.tag != "!private"
+      puts child.tag
+      if child.is_a? Psych::Nodes::Sequence
+        child.children.map(&:value).join("-")
+      elsif child.is_a? Psych::Nodes::Scalar
+        child.value
+      end
+    end.compact
   end
 
   def parse_children(node)
