@@ -72,11 +72,12 @@ class SwiftFilesController < ApplicationController
     @provides = @swift_file.provides
       .where("dependency_type <> ?", SwiftFile::EXTERNAL)
       .where("dependency_type <> ?", SwiftFile::MEMBER)
-      .where("value LIKE '%9hopscotch%'").map(&:depends_files).flatten.uniq
+    @provides_files =
+      @provides.map(&:depends_files).flatten.uniq
+    @provides = @provides.flatten.uniq
 
     @depends = @swift_file.depends
       .where("dependency_type <> ?", SwiftFile::EXTERNAL)
       .where("dependency_type <> ?", SwiftFile::MEMBER)
-      .where("value LIKE '%9hopscotch%'")
   end
 end

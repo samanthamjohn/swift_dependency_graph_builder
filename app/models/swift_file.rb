@@ -21,7 +21,13 @@ class SwiftFile < ActiveRecord::Base
   end
 
   def setup_dependencies
-    mapping = YAML.parse(File.open(filepath)).children.first
+    begin
+      mapping = YAML.parse(File.open(filepath)).children.first
+    rescue
+      puts "Couldn't read #{filepath}... "
+      puts ""
+      return
+    end
 
     [TOP_LEVEL, NOMINAL, MEMBER].each do |type|
       parse_mapping(mapping, type, PROVIDER)
@@ -101,6 +107,7 @@ class SwiftFile < ActiveRecord::Base
   end
 
   def create_dependency(value, type, provider_or_dependent)
+      return unless value.is_a? String
       dependency = Dependency.find_or_create_by(value: value, dependency_type: type)
       FileDependency.find_or_create_by(dependency: dependency,
                             swift_file: self,
@@ -112,7 +119,6 @@ class SwiftFile < ActiveRecord::Base
 
     node.children.map do |child|
       next unless child.tag != "!private"
-      puts child.tag
       if child.is_a? Psych::Nodes::Sequence
         child.children.map(&:value).join("-")
       elsif child.is_a? Psych::Nodes::Scalar
